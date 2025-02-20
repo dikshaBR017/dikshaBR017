@@ -1,0 +1,112 @@
+solution;
+#include <stdio.h>
+#include <string.h> // For strcasecmp
+
+int main() {
+    int age, salary;
+    char condition[10];
+
+    // Input from user
+    printf("Enter Age: ");
+    scanf("%d", &age);
+    
+    printf("Any Pre-existing Condition? (yes/no): ");
+    scanf("%9s", condition); // Limit input to prevent overflow
+    
+    printf("Enter Monthly Salary: ");
+    scanf("%d", &salary);
+
+    // Check eligibility
+    if (age >= 18 && age <= 60 && strcasecmp(condition, "no") == 0 && salary >= 25000) {
+        printf("Eligible for Medical Insurance\n");
+    } else {
+        printf("Not Eligible for Medical Insurance\n");
+    }
+
+    return 0;
+}
+solution :
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    int n, total_tax = 0;
+    char vehicle[10];
+
+    // Input the number of vehicles
+    printf("Enter number of vehicles: ");
+    scanf("%d", &n);
+
+    // Loop through each vehicle type
+    for (int i = 0; i < n; i++) {
+        printf("Enter vehicle type (Car/Truck/Bike/Bus): ");
+        scanf("%s", vehicle);
+
+        // Calculate toll tax based on vehicle type
+        switch (vehicle[0]) {
+            case 'C':
+            case 'c':
+                total_tax += 50; // Car
+                break;
+            case 'T':
+            case 't':
+                total_tax += 100; // Truck
+                break;
+            case 'B':
+            case 'b':
+                total_tax += 20; // Bike
+                break;
+            case 'U':
+            case 'u':
+                total_tax += 80; // Bus
+                break;
+            default:
+                printf("Invalid vehicle type: %s\n", vehicle);
+                break;
+        }
+    }
+
+    // Output the total toll tax
+    printf("Total Toll Tax: ₹%d\n", total_tax);
+
+    return 0;
+}
+solution :
+#include <stdio.h>
+
+// Function prototypes
+void withdraw(float *balance);
+void deposit(float *balance);
+void check_balance(float balance);
+
+int main() {
+    int choice;
+    float balance = 10000; // Initial balance
+
+    do {
+        // Display menu
+        printf("\nATM Transaction System\n");
+        printf("1. Withdraw Money\n");
+        printf("2. Deposit Money\n");
+        printf("3. Check Balance\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        // Switch case to handle user choice
+        switch (choice) {
+            case 1:
+                withdraw(&balance);
+                break;
+            case 2:
+                deposit(&balance);
+                break;
+            case 3:
+                check_balance(balance);
+                break;
+            case 4:
+                printf("Exiting the ATM. Thank you!\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
