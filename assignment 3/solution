@@ -1,0 +1,164 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PASSENGERS 100
+#define MAX_NAME_LENGTH 50
+#define MAX_DESTINATION_LENGTH 50
+
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    int age;
+    char destination[MAX_DESTINATION_LENGTH];
+} Passenger;
+
+// Function to add a new passenger
+void add_passenger(Passenger passengers[], int *count) {
+    printf("Enter passenger name: ");
+    scanf("%s", passengers[*count].name);
+    printf("Enter passenger age: ");
+    scanf("%d", &passengers[*count].age);
+    printf("Enter passenger destination: ");
+    scanf("%s", passengers[*count].destination);
+    (*count)++;
+}
+
+// Function to sort passengers by destination
+void sort_passengers(Passenger passengers[], int count) {
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (strcmp(passengers[i].destination, passengers[j].destination) > 0) {
+                Passenger temp = passengers[i];
+                passengers[i] = passengers[j];
+                passengers[j] = temp;
+            }
+        }
+    }
+}
+
+// Function to search for passengers by destination
+void search_passengers(Passenger passengers[], int count, const char *destination) {
+    int found = 0;
+    printf("Passengers traveling to %s: ", destination);
+    for (int i = 0; i < count; i++) {
+        if (strcasecmp(passengers[i].destination, destination) == 0) {
+            printf("%s ", passengers[i].name);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No passengers found.");
+    }
+    printf("\n");
+}
+
+int main() {
+    Passenger passengers[MAX_PASSENGERS];
+    int count = 0;
+    int n;
+
+    printf("Enter number of passengers: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        printf("Passenger %d:\n", i + 1);
+        add_passenger(passengers, &count);
+    }
+
+    sort_passengers(passengers, count);
+
+    printf("\nSorted List (by destination):\n");
+    for (int i = 0; i < count; i++) {
+        printf("%s\n%s\n", passengers[i].name, passengers[i].destination);
+    }
+
+    char destination[MAX_DESTINATION_LENGTH];
+    printf("\nEnter destination to search: ");
+    scanf("%s", destination);
+    search_passengers(passengers, count, destination);
+
+    return 0;
+}
+answer
+#include <stdio.h>
+#include <string.h>
+
+int count_pattern_occurrences(const char *dna_sequence, const char *pattern) {
+    int count = 0;
+    const char *temp = dna_sequence;
+
+    // Use strstr to find occurrences of the pattern
+    while ((temp = strstr(temp, pattern)) != NULL) {
+        count++;
+        temp++; // Move past the last found occurrence
+    }
+
+    return count;
+}
+
+int main() {
+    char dna_sequence[100];
+    char pattern[100];
+
+    // Input DNA sequence
+    printf("Enter DNA Sequence: ");
+    scanf("%s", dna_sequence);
+
+    // Input pattern to search
+    printf("Enter pattern to search: ");
+    scanf("%s", pattern);
+
+    // Count occurrences of the pattern in the DNA sequence
+    int occurrences = count_pattern_occurrences(dna_sequence, pattern);
+
+    // Output the result
+    printf("Pattern found %d time(s) in the DNA sequence.\n", occurrences);
+
+    return 0;
+}
+answer
+#include <stdio.h>
+
+int main() {
+    int n, i;
+    float sum = 0.0, average;
+    int highest, lowest;
+
+    // Input number of matches
+    printf("Enter number of matches: ");
+    scanf("%d", &n);
+
+    int scores[n]; // Array to store scores
+
+    // Input scores for the matches
+    printf("Enter scores of %d matches: ", n);
+    for (i = 0; i < n; i++) {
+        scanf("%d", &scores[i]);
+    }
+
+    // Initialize highest and lowest with the first score
+    highest = scores[0];
+    lowest = scores[0];
+
+    // Calculate sum, highest, and lowest scores
+    for (i = 0; i < n; i++) {
+        sum += scores[i]; // Calculate sum
+
+        if (scores[i] > highest) {
+            highest = scores[i]; // Update highest score
+        }
+        if (scores[i] < lowest) {
+            lowest = scores[i]; // Update lowest score
+        }
+    }
+
+    // Calculate average score
+    average = sum / n;
+
+    // Output the results
+    printf("Highest Score: %d\n", highest);
+    printf("Lowest Score: %d\n", lowest);
+    printf("Average Score: %.2f\n", average);
+
+    return 0;
+}
