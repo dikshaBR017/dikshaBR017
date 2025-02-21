@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_CITY_NAME_LENGTH 50
+
+// Structure to hold weather data for a city
+typedef struct {
+    char cityName[MAX_CITY_NAME_LENGTH];
+    char temperature[10]; // e.g., "32°C"
+    char humidity[10];    // e.g., "80%"
+} WeatherData;
+
+// Function to save weather data to a file
+void saveWeatherDataToFile(WeatherData *weatherData, int count) {
+    FILE *file = fopen("weather_data.txt", "w");
+    if (file == NULL) {
+        printf("Error opening file for writing.\n");
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        fprintf(file, "%s, %s, %s\n", weatherData[i].cityName, weatherData[i].temperature, weatherData[i].humidity);
+    }
+    fclose(file);
+    printf("Data saved in \"weather_data.txt\"\n");
+}
+
+// Function to search for weather data by city name
+void searchWeatherData(WeatherData *weatherData, int count, const char *cityName) {
+    for (int i = 0; i < count; i++) {
+        if (strcmp(weatherData[i].cityName, cityName) == 0) {
+            printf("Weather in %s: %s, %s Humidity\n", weatherData[i].cityName, weatherData[i].temperature, weatherData[i].humidity);
+            return;
+        }
+    }
+    printf("City not found.\n");
+}
+
+int main() {
+    int numCities;
+
+    // Input number of cities
+    printf("Enter number of cities: ");
+    if (scanf("%d", &numCities) != 1 || numCities <= 0) {
+        printf("Invalid number of cities.\n");
+        return 1;
+    }
+    getchar(); // To consume the newline character after the number input
+
+    // Dynamically allocate memory for weather data
+    WeatherData *weatherData = malloc(numCities * sizeof(WeatherData));
+    if (weatherData == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
+    // Input weather data for each city
+    for (int i = 0; i < numCities; i++) {
+        printf("City %d (format: CityName, Temperature, Humidity): ", i + 1);
+        if (scanf("%49[^,], %9[^,], %9[^\n]", weatherData[i].cityName, weatherData[i].temperature, weatherData[i].humidity) != 3) {
+            printf("Invalid input format. Please use the correct format.\n");
+            free(weatherData);
+            return 1;
+        }
+        getchar(); // To consume the newline character after the input
+    }
+
+    // Save weather data to file
+    saveWeatherDataToFile(weatherData, numCities);
+
+    // Retrieve weather data for a specific city
+    char searchCity[MAX_CITY_NAME_LENGTH];
+    printf("\nEnter city name to search: ");
+    fgets(searchCity, sizeof(searchCity), stdin);
+    searchCity[strcspn(searchCity, "\n")] = 0; // Remove newline character
+
+    searchWeatherData(weatherData, numCities, searchCity);
+
+    // Free allocated memory
+    free(weatherData);
+    return 0;
+}
