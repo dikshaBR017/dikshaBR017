@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct student_t {
+    int roll_no;
+    char name[200];
+    float marks;
+    char course[100];
+};
+
+typedef struct student_t Student;
+
+void readStudents(Student *students, int n);
+void displayStudents(Student *students, int n);
+void saveStudents(Student *students, int n);
+Student findHighestScored(Student *students, int n);
+
+int main() {
+    int studentCount;
+    printf("Enter number of students: ");
+    if (scanf("%d", &studentCount) != 1 || studentCount <= 0) {
+        printf("Invalid number of students.\n");
+        return 1; // Exit with error code
+    }
+
+    // Dynamic memory allocation for students
+    Student *students = malloc(studentCount * sizeof(Student));
+    if (students == NULL) {
+        perror("Failed to allocate memory");
+        return 1; // Exit with error code
+    }
+
+    readStudents(students, studentCount);
+    displayStudents(students, studentCount);
+    
+    Student highestScored = findHighestScored(students, studentCount);
+    printf("\nStudent with highest marks: %s, %.2f (%s)\n", highestScored.name, highestScored.marks, highestScored.course);
+    
+    // Save student details to a file
+    saveStudents(students, studentCount);
+    
+    free(students);
+    
+    return 0;
+}
+
+void readStudents(Student *students, int n) {
+    for (int i = 0; i < n; i++) {
+        printf("Enter details for student %d:\n", i + 1);
+        
+        printf("Roll No: ");
+        while (scanf("%d", &students[i].roll_no) != 1) {
+            printf("Invalid input. Please enter a valid Roll No: ");
+            while (getchar() != '\n'); // Clear invalid input
+        }
+        
+        printf("Name: ");
+        scanf(" %199[^\n]", students[i].name);
+        
+        printf("Marks: ");
+        while (scanf("%f", &students[i].marks) != 1) {
+            printf("Invalid input. Please enter a valid Marks: ");
+            while (getchar() != '\n'); // Clear invalid input
+        }
+
+        printf("Course: ");
+        scanf(" %99[^\n]", students[i].course);
+    }
+}
+
+void displayStudents(Student *students, int n) {
+    printf("\nStudent Details:\n\n");
+    for (int i = 0; i < n; i++) {
+        printf("Roll No: %d, Name: %s, Marks: %.2f, Course: %s\n", students[i].roll_no, students[i].name, students[i].marks, students[i].course);
+    }
+}
+
+void saveStudents(Student *students, int n) {
+    FILE* file = fopen("students.txt", "w");
+    if (file == NULL) {
+        perror("Error opening file");
+        return;
+    }
+    
+    for (int i = 0; i < n; i++) {
+        fprintf(file, "%d %s %.2f %s\n", students[i].roll_no, students[i].name, students[i].marks, students[i].course);
+    }
+     
+    fclose(file);
+}
+
+Student findHighestScored(Student *students, int n) {
+    Student highest = students[0];
+    for (int i = 1; i < n; i++) {
+        if (students[i].marks > highest.marks) {
+            highest = students[i];
+        }
+    }
+    return highest;
+}
