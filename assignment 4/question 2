@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_ORDERS 100
+#define MAX_NAME_LENGTH 50
+#define MAX_PRODUCT_LENGTH 50
+
+// Structure to hold order details
+typedef struct {
+    int orderID;
+    char customerName[MAX_NAME_LENGTH];
+    char product[MAX_PRODUCT_LENGTH];
+    float amount;
+} Order;
+
+// Function to save orders to a file
+void saveOrdersToFile(Order orders[], int count) {
+    FILE *file = fopen("orders.txt", "w");
+    if (file == NULL) {
+        printf("Error opening file for writing.\n");
+        return;
+    }
+    for (int i = 0; i < count; i++) {
+        fprintf(file, "%d, %s, %s, %.2f\n", orders[i].orderID, orders[i].customerName, orders[i].product, orders[i].amount);
+    }
+    fclose(file);
+    printf("Record saved in \"orders.txt\"\n");
+}
+
+// Function to search for an order by ID
+void searchOrder(Order orders[], int count, int searchID) {
+    for (int i = 0; i < count; i++) {
+        if (orders[i].orderID == searchID) {
+            printf("Order Found: %s - %s - ₹%.2f\n", orders[i].customerName, orders[i].product, orders[i].amount);
+            return;
+        }
+    }
+    printf("Order not found.\n");
+}
+
+int main() {
+    Order orders[MAX_ORDERS];
+    int numOrders;
+
+    // Input number of orders
+    printf("Enter number of orders: ");
+    scanf("%d", &numOrders);
+    getchar(); // To consume the newline character after the number input
+
+    // Input order details
+    for (int i = 0; i < numOrders; i++) {
+        printf("Order %d: ", i + 1);
+        scanf("%d, %49[^,], %49[^,], %f", &orders[i].orderID, orders[i].customerName, orders[i].product, &orders[i].amount);
+    }
+
+    // Save orders to file
+    saveOrdersToFile(orders, numOrders);
+
+    // Retrieve order details
+    int searchID;
+    printf("\nEnter Order ID to search: ");
+    scanf("%d", &searchID);
+    searchOrder(orders, numOrders, searchID);
+
+    return 0;
+}
