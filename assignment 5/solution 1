@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_CALLS 100
+
+typedef struct {
+    int call_id;
+    char customer_name[50];
+} Call;
+
+typedef struct {
+    Call calls[MAX_CALLS];
+    int front;
+    int rear;
+} CallQueue;
+
+
+void initQueue(CallQueue *queue) {
+    queue->front = -1;
+    queue->rear = -1;
+}
+
+
+int isEmpty(CallQueue *queue) {
+    return (queue->front == -1);
+}
+
+// Function to check if the queue is full
+int isFull(CallQueue *queue) {
+    return (queue->rear == MAX_CALLS - 1);
+}
+
+
+void addCall(CallQueue *queue, int call_id, const char *customer_name) {
+    if (isFull(queue)) {
+        printf("Queue is full. Cannot add new call.\n");
+        return;
+    }
+    if (isEmpty(queue)) {
+        queue->front = 0; // Set front to 0 if adding the first call
+    }
+    queue->rear++;
+    queue->calls[queue->rear].call_id = call_id;
+    strcpy(queue->calls[queue->rear].customer_name, customer_name);
+    printf("New Call Added: Call %d from %s\n", call_id, customer_name);
+}
+
+
+void processCall(CallQueue *queue) {
+    if (isEmpty(queue)) {
+        printf("No calls to process.\n");
+        return;
+    }
+    Call call_to_process = queue->calls[queue->front];
+    printf("Processing Call: %d from %s\n", call_to_process.call_id, call_to_process.customer_name);
+    
+    
+    for (int i = queue->front; i < queue->rear; i++) {
+        queue->calls[i] = queue->calls[i + 1];
+    }
+    queue->rear--;
+    if (queue->rear < 0) {
+        queue->front = -1; // Reset front if queue is empty
+    }
+}
+
+
+void displayRemainingCalls(CallQueue *queue) {
+    if (isEmpty(queue)) {
+        printf("No remaining calls in the queue.\n");
+        return;
+    }
+    printf("Remaining Calls: ");
+    for (int i = queue->front; i <= queue->rear; i++) {
+        printf("Call %d from %s ", queue->calls[i].call_id, queue->calls[i].customer_name);
+    }
+    printf("\n");
+}
+
+
+int main() {
+    CallQueue call_queue;
+    initQueue(&call_queue);
+    
+ 
+    addCall(&call_queue, 101, "Alice");
+    addCall(&call_queue, 102, "Bob");
+    
+   
+    processCall(&call_queue);
+   
+    displayRemainingCalls(&call_queue);
+    
+    return 0;
+}
