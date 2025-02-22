@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PASSENGERS 2  // Maximum number of confirmed bookings
+#define MAX_WAITLIST 5    // Maximum number of passengers in the waiting list
+
+typedef struct {
+    int passenger_id;
+    char name[50];
+} Passenger;
+
+typedef struct {
+    Passenger confirmed[MAX_PASSENGERS];
+    Passenger waiting[MAX_WAITLIST];
+    int confirmed_count;
+    int waiting_count;
+} ReservationSystem;
+
+// Function to initialize the reservation system
+void initReservationSystem(ReservationSystem *system) {
+    system->confirmed_count = 0;
+    system->waiting_count = 0;
+}
+
+// Function to add a new reservation
+void addReservation(ReservationSystem *system, int passenger_id, const char *name) {
+    if (system->confirmed_count < MAX_PASSENGERS) {
+        system->confirmed[system->confirmed_count].passenger_id = passenger_id;
+        strcpy(system->confirmed[system->confirmed_count].name, name);
+        printf("Booking Confirmed: Passenger %d (%s)\n", passenger_id, name);
+        system->confirmed_count++;
+    } else if (system->waiting_count < MAX_WAITLIST) {
+        system->waiting[system->waiting_count].passenger_id = passenger_id;
+        strcpy(system->waiting[system->waiting_count].name, name);
+        printf("Added to Waiting List: Passenger %d (%s)\n", passenger_id, name);
+        system->waiting_count++;
+    } else {
+        printf("Booking Failed: No more space in confirmed bookings or waiting list.\n");
+    }
+}
+
+// Function to display the waiting list
+void displayWaitingList(ReservationSystem *system) {
+    if (system->waiting_count > 0) {
+        printf("Waiting List: ");
+        for (int i = 0; i < system->waiting_count; i++) {
+            printf("Passenger %d (%s) ", system->waiting[i].passenger_id, system->waiting[i].name);
+        }
+        printf("\n");
+    } else {
+        printf("No passengers in the waiting list.\n");
+    }
+}
+
+// Main function to demonstrate the reservation system
+int main() {
+    ReservationSystem reservation_system;
+    initReservationSystem(&reservation_system);
+    
+    // Adding new reservations
+    addReservation(&reservation_system, 1, "Alice");
+    addReservation(&reservation_system, 2, "Bob");
+    addReservation(&reservation_system, 3, "Charlie"); // This should go to the waiting list
+    addReservation(&reservation_system, 4, "David");   // This should also go to the waiting list
+    addReservation(&reservation_system, 5, "Eve");     // This should fail as both lists are full
+
+    // Display waiting list
+    displayWaitingList(&reservation_system);
+    
+    return 0;
+}
